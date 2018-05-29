@@ -6,7 +6,7 @@ Detect porn pics; 黄图检测的小demo
 需要在https://github.com/ph1ps/Nudity-CoreML  
 这个地址中下载模型手动加入到工程中（模型文件较大，因此未包含在项目中）。
 
-Really awesome for CoreML! Cool and easy to use!
-Thanks to:
+Really awesome for CoreML! Cool and easy to use!  
+Thanks to:   
 https://github.com/ph1ps/Nudity-CoreML  
 https://github.com/likedan/Awesome-CoreML-Models
