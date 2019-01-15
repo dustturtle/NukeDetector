@@ -12,6 +12,9 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import "Nudity.h"
+#import "mobv2F16.h"
+#import "mobv2Q.h"
+#import "mobv2.h"
 
 @interface ViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 {
@@ -142,15 +145,15 @@
     // 实验表明转换会降低精度。说明这里的输入应该不转换为宜。？？！！！
     // 不同的输入，不同的结果！
     
-    CGContextConcatCTM(context, CGAffineTransformMakeRotation(0)); //0
-    CGAffineTransform flipVertical = CGAffineTransformMake( 1, 0, 0, -1, 0, CGImageGetHeight(cgRef));
-    CGContextConcatCTM(context, flipVertical);
+//    CGContextConcatCTM(context, CGAffineTransformMakeRotation(0)); //0
+//    CGAffineTransform flipVertical = CGAffineTransformMake( 1, 0, 0, -1, 0, CGImageGetHeight(cgRef));
+//    CGContextConcatCTM(context, flipVertical);
 
 //    CGAffineTransform flipHorizontal = CGAffineTransformMake( -1.0, 0.0, 0.0, 1.0, CGImageGetWidth(cgRef), 0.0);
 //    CGContextConcatCTM(context, flipHorizontal);
     
     //gzw
-    //CGContextConcatCTM(context, CGAffineTransformIdentity);
+    CGContextConcatCTM(context, CGAffineTransformIdentity);
     
     CGContextDrawImage(context, CGRectMake(0,
                                            0,
@@ -177,36 +180,50 @@
     UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
     if (image)
     {
-        Nudity *model = [[Nudity alloc] init];
+        mobv2Q *model = [[mobv2Q alloc] init];
         UIImage *normalizedImg = [self normalizedImage:image];
         self.imgView.image = normalizedImg;
         CVPixelBufferRef pbR = [self pixelBufferForNukeDFromImage:normalizedImg];
-        NudityOutput *outPut = [model predictionFromData:pbR error:nil];
-        NSDictionary *resultProb = outPut.prob;
+        mobv2QOutput *outPut = [model predictionFromInput__0:pbR error:nil];
+        //NSDictionary *resultProb = outPut.prob;
+        NSLog(@"%@", outPut.classLabel);
         
-        // refresh Label with result.
-        if ([outPut.classLabel isEqualToString:@"SFW"])
-        {
-            // 结果为nsnumber，稍作处理一下！
-            NSInteger resultValue = [resultProb[@"SFW"] doubleValue]*10000;
-            float resultFloat = resultValue/100.0f;
-            // 非裸露
-            self.resultLabel.text = [NSString stringWithFormat:@"鉴定结果为正常，可信度达到%.2f%%", resultFloat];
-        }
-        else if ([outPut.classLabel isEqualToString:@"NSFW"])
-        {
-            // 结果为nsnumber，稍作处理一下！
-            NSInteger resultValue = [resultProb[@"NSFW"] doubleValue]*10000;
-            float resultFloat = resultValue/100.0f;
-            // 裸露
-            self.resultLabel.text = [NSString stringWithFormat:@"照片鉴定结果为黄图，可信度达到%.2f%%", resultFloat];
-        }
-        else
-        {
-            self.resultLabel.text = @"照片鉴定失败，出现未知错误";
-        }
+        NSLog(@"%@", outPut.MobilenetV2__Predictions__Reshape_1__0);
+        
+        
+        //return;
+        
+//
+//        Nudity *model = [[Nudity alloc] init];
+//        UIImage *normalizedImg = [self normalizedImage:image];
+//        self.imgView.image = normalizedImg;
+//        CVPixelBufferRef pbR = [self pixelBufferForNukeDFromImage:normalizedImg];
+//        NudityOutput *outPut = [model predictionFromData:pbR error:nil];
+//        NSDictionary *resultProb = outPut.prob;
+//
+//        // refresh Label with result.
+//        if ([outPut.classLabel isEqualToString:@"SFW"])
+//        {
+//            // 结果为nsnumber，稍作处理一下！
+//            NSInteger resultValue = [resultProb[@"SFW"] doubleValue]*10000;
+//            float resultFloat = resultValue/100.0f;
+//            // 非裸露
+//            self.resultLabel.text = [NSString stringWithFormat:@"鉴定结果为正常，可信度达到%.2f%%", resultFloat];
+//        }
+//        else if ([outPut.classLabel isEqualToString:@"NSFW"])
+//        {
+//            // 结果为nsnumber，稍作处理一下！
+//            NSInteger resultValue = [resultProb[@"NSFW"] doubleValue]*10000;
+//            float resultFloat = resultValue/100.0f;
+//            // 裸露
+//            self.resultLabel.text = [NSString stringWithFormat:@"照片鉴定结果为黄图，可信度达到%.2f%%", resultFloat];
+//        }
+//        else
+//        {
+//            self.resultLabel.text = @"照片鉴定失败，出现未知错误";
+//        }
     }
-    
+
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
